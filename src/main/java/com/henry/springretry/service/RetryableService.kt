@@ -14,6 +14,7 @@ class RetryableService {
 
     companion object : KLogging()
 
+    @Throws(Exception::class)
     fun <T> run(
         action: () -> T,
         maxAttempts: Int = 3,
