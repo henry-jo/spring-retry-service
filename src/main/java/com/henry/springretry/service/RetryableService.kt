@@ -11,12 +11,12 @@ class RetryableService {
 
     companion object : KLogging()
 
-    fun run(
-        action: () -> Unit,
+    fun <T> run(
+        action: () -> T,
         maxAttempts: Int = 3,
         exceptions: List<Class<out Throwable>> = listOf(Exception::class.java),
         maxInterval: Long = 2000L
-    ) {
+    ): T {
         val retryTemplate = RetryTemplate()
 
 //        val fixedBackOffPolicy = FixedBackOffPolicy() // fixed back off
@@ -31,9 +31,10 @@ class RetryableService {
         val retryPolicy = SimpleRetryPolicy(maxAttempts, exceptionMap)
         retryTemplate.setRetryPolicy(retryPolicy)
 
-        return retryTemplate.execute<Unit, NoSuchElementException> {
-            action()
-            logger.info("retry!")
+        return retryTemplate.execute<T, NoSuchElementException> {
+            action().also {
+                logger.info("retry!")
+            }
         }
     }
 }

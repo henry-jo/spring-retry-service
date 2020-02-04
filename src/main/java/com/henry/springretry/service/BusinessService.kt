@@ -18,4 +18,13 @@ class BusinessService {
             throw RuntimeException()
         }, maxAttempts = 5, exceptions = listOf(RuntimeException::class.java))
     }
+
+    fun retryTest2(inputVal: Int): Int {
+        return retryableService.run(action = {
+            logger.info("비즈니스 로직")
+            testMutltiple(inputVal)
+        }, maxAttempts = 5, exceptions = listOf(RuntimeException::class.java))
+    }
+
+    private fun testMutltiple(inputVal: Int) = inputVal * 2
 }
