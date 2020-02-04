@@ -1,5 +1,6 @@
 package com.henry.springretry.config
 
+import com.henry.springretry.listener.RetryListener
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.retry.backoff.FixedBackOffPolicy
@@ -17,6 +18,8 @@ class RetryConfig {
     @Bean
     fun retryTemplate(): RetryTemplate {
         val retryTemplate = RetryTemplate()
+
+        retryTemplate.registerListener(RetryListener())
 
         val fixedBackOffPolicy = FixedBackOffPolicy()
         fixedBackOffPolicy.backOffPeriod = 2000L // default setting

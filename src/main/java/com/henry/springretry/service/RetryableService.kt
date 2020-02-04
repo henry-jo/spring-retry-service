@@ -1,5 +1,6 @@
 package com.henry.springretry.service
 
+import com.henry.springretry.listener.RetryListener
 import mu.KLogging
 import org.springframework.retry.RecoveryCallback
 import org.springframework.retry.RetryCallback
@@ -20,6 +21,7 @@ class RetryableService {
         maxInterval: Long = 2000L
     ): T {
         val retryTemplate = RetryTemplate()
+        retryTemplate.registerListener(RetryListener())
 
 //        val fixedBackOffPolicy = FixedBackOffPolicy() // fixed back off
         val exponentialBackOffPolicy = ExponentialBackOffPolicy().apply {
@@ -34,9 +36,7 @@ class RetryableService {
         retryTemplate.setRetryPolicy(retryPolicy)
 
         return retryTemplate.execute<T, Throwable> {
-            action().also {
-                logger.info("retry!")
-            }
+            action()
         }
 
         /** ADD RECOVERY Version
