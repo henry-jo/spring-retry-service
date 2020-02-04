@@ -1,6 +1,8 @@
 package com.henry.springretry.service
 
 import mu.KLogging
+import org.springframework.retry.RecoveryCallback
+import org.springframework.retry.RetryCallback
 import org.springframework.retry.backoff.ExponentialBackOffPolicy
 import org.springframework.retry.policy.SimpleRetryPolicy
 import org.springframework.retry.support.RetryTemplate
@@ -31,10 +33,22 @@ class RetryableService {
         val retryPolicy = SimpleRetryPolicy(maxAttempts, exceptionMap)
         retryTemplate.setRetryPolicy(retryPolicy)
 
-        return retryTemplate.execute<T, NoSuchElementException> {
+        return retryTemplate.execute<T, Throwable> {
             action().also {
                 logger.info("retry!")
             }
         }
+
+        /** ADD RECOVERY Version
+        return retryTemplate.execute(RetryCallback<T, Throwable> {
+            action().also {
+                logger.info("retry!")
+            }
+        }, RecoveryCallback<T>{
+            action().also {
+                logger.info("recovery!")
+            }
+        })
+        */
     }
 }
