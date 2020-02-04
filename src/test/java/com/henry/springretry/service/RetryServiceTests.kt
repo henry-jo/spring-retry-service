@@ -23,4 +23,15 @@ class RetryServiceTests {
     fun retryTest2() {
         assertEquals(4, businessService.retryTest2(2))
     }
+
+    // 재시도하지 않음
+    @Test(expected = RuntimeException::class)
+    fun retryTest3() {
+        assertEquals(4, businessService.retryTest3())
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun retryTest4() {
+        assertEquals(4, businessService.retryTest4())
+    }
 }

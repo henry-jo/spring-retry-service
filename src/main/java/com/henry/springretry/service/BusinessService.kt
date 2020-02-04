@@ -22,9 +22,23 @@ class BusinessService {
     fun retryTest2(inputVal: Int): Int {
         return retryableService.run(action = {
             logger.info("비즈니스 로직")
-            testMutltiple(inputVal)
+            testMultiple(inputVal)
         }, maxAttempts = 5, exceptions = listOf(RuntimeException::class.java))
     }
 
-    private fun testMutltiple(inputVal: Int) = inputVal * 2
+    fun retryTest3() {
+        retryableService.run(action = {
+            logger.info("비즈니스 로직")
+            throw RuntimeException()
+        }, maxAttempts = 5, exceptions = listOf(NoSuchElementException::class.java, IllegalStateException::class.java))
+    }
+
+    fun retryTest4() {
+        retryableService.run(action = {
+            logger.info("비즈니스 로직")
+            throw IllegalStateException()
+        }, maxAttempts = 5, exceptions = listOf(NoSuchElementException::class.java, IllegalStateException::class.java))
+    }
+
+    private fun testMultiple(inputVal: Int) = inputVal * 2
 }
